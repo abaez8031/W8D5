@@ -39,38 +39,42 @@ const pavlov = new Dog("Pavlov");
 //   };
 // };
 
-
 Function.prototype.myBind = function (context, ...bindArgs) {
-    const that = this;
-    return function (...callArgs) {
-      that.apply(context, bindArgs.concat(callArgs));
-    };
+  const that = this;
+  return function (...callArgs) {
+    that.apply(context, bindArgs.concat(callArgs));
   };
-  
-  markov.says("meow", "Ned");
-  
-  markov.says.myBind(pavlov, "meow", "Kush")();
-  
-  const notMarkovSays = markov.says.myBind(pavlov);
-  notMarkovSays("meow", "me")
-  
-  
+};
 
+markov.says("meow", "Ned");
+
+markov.says.myBind(pavlov, "meow", "Kush")();
+
+const notMarkovSays = markov.says.myBind(pavlov);
+notMarkovSays("meow", "me");
 
 // Curried Sum
 
 function curriedSum(numArgs) {
-    while (numArgs > 0){
-    let total = [];
-    let sumsum = 0;
-    return function mySum(input) {
-        console.log(total);
-        total.push(input);
-    }
-    total.forEach(function (el) {sumsum += el} ) };
-    return sumsum;
-}
+  let total = [];
+  let sumsum = 0;
 
+  if (numArgs === 0) {
+    total.forEach(function (el) {
+      sumsum += el;
+    });
+    return sumsum;
+  }
+
+  return function mySum(input) {
+    while (numArgs > 0) {
+      numArgs -= 1;
+      total.push(input);
+      console.log(total);
+      return mySum;
+    }
+  };
+}
 
 const sum = curriedSum(4);
 sum(5)(30)(20)(1); // => 56
